@@ -1,0 +1,3 @@
+- NPIs during COVID19
+- Vector borne diseases
+- Vaccine allocation under threshold style models
