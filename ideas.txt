@@ -1,3 +1,12 @@
 - NPIs during COVID19
 - Vector borne diseases
 - Vaccine allocation under threshold style models
+
+
+NPIs and Influenza:
+	- CDC FluView has tons of influenza data over time
+	- Can compare previous endemics with 20-21, 21-22, 22-23 seasons
+	- Maybe predict future endemics
+	- Overall increased caution from COVID-19 to help with disease spread?
+	- Match strain data between seasons; some strains might spread more easily than others
+
