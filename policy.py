@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 
+
 # fills 4 variables (data2020, data2021, data2022, all_data) with the raw USA csv data from 2020-2022
 def read_data():
     global data2020, data2021, data2022, all_data
@@ -9,6 +10,7 @@ def read_data():
     data2021 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2021.csv', dtype=str)
     data2022 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2022.csv', dtype=str)
     all_data = pd.concat([data2020, data2021, data2022])
+
 
 def nyc_containment_closing():
     new_york = all_data[all_data['RegionName'] == 'New York']
@@ -36,6 +38,7 @@ def nyc_containment_closing():
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
     plt.show()
+
 
 if __name__ == '__main__':
     read_data()
