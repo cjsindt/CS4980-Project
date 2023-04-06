@@ -23,4 +23,3 @@ if __name__ == '__main__':
     plt.title('Case Count for New York')
     plt.show()
     
-    
