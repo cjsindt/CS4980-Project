@@ -1,0 +1,18 @@
+"*Beginning for the 2015-16 season, reports from public health and clinical laboratories are presented separately in the weekly influenza update, FluView.  Data presented from public health laboratories include the weekly total number of specimens tested, the number of positive influenza tests, and the number by influenza virus type, subtype, and influenza B lineage."
+REGION TYPE,REGION,SEASON_DESCRIPTION,TOTAL SPECIMENS,A (2009 H1N1),A (H3),A (Subtyping not Performed),B,BVic,BYam,H3N2v
+States,Colorado,Season 2015-16,1625,912,243,3,13,40,144,0
+States,New York,Season 2015-16,3219,889,96,30,32,167,91,0
+States,Colorado,Season 2016-17,714,3,267,2,4,31,219,0
+States,New York,Season 2016-17,2581,10,857,17,56,39,164,0
+States,Colorado,Season 2017-18,1087,54,501,4,19,2,162,0
+States,New York,Season 2017-18,4102,232,1422,18,153,17,384,0
+States,Colorado,Season 2018-19,1538,520,541,29,5,16,3,0
+States,New York,Season 2018-19,3325,933,987,60,14,32,10,0
+States,Colorado,Season 2019-20,1824,552,53,10,145,187,0,0
+States,New York,Season 2019-20,2335,578,99,9,214,231,23,0
+States,Colorado,Season 2020-21,2232,0,1,0,0,0,0,0
+States,New York,Season 2020-21,56559,2,2,1,7,0,0,0
+States,Colorado,Season 2021-22,1337,1,713,19,0,1,0,0
+States,New York,Season 2021-22,92963,4,221,389,5,0,0,0
+States,Colorado,Season 2022-23,745,180,440,4,0,33,0,0
+States,New York,Season 2022-23,17464,95,442,436,17,3,0,0
