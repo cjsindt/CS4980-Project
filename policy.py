@@ -12,7 +12,7 @@ def read_data():
     all_data = pd.concat([data2020, data2021, data2022])
 
 
-def nyc_containment_closing_1(state):
+def containment_closing_1(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 1
     func = lambda x: 1 if x >= threshold else 0
@@ -31,6 +31,7 @@ def nyc_containment_closing_1(state):
     start_date = datetime.datetime(2020, 1, 1)
     x_range = [start_date + datetime.timedelta(days=i) for i in range(len(data))]
 
+    plt.figure(figsize=(24,6), dpi=200)
     plt.stackplot(x_range, y1.fillna(0), y2.fillna(0), y3.fillna(0), y4.fillna(0), y5.fillna(0), y6.fillna(0), y7.fillna(0), y8.fillna(0), labels=policy_labels)
     #plt.plot(range(len(school_closing)), school_closing['C1NV_School closing'].astype(float), 'b', label='Non-Vaccinated')
     #plt.plot(range(len(school_closing)), school_closing['C1V_School closing'].astype(float), 'g', label='Vaccinated')
@@ -39,9 +40,10 @@ def nyc_containment_closing_1(state):
     plt.title(f'Containment and Closure Policies of at Least Recommended Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
+    plt.savefig(f'./plots/{state}1.png')
     plt.show()
 
-def nyc_containment_closing_2(state):
+def containment_closing_2(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 2
     func = lambda x: 1 if x >= threshold else 0
@@ -60,6 +62,7 @@ def nyc_containment_closing_2(state):
     start_date = datetime.datetime(2020, 1, 1)
     x_range = [start_date + datetime.timedelta(days=i) for i in range(len(data))]
 
+    plt.figure(figsize=(24,6), dpi=200)
     plt.stackplot(x_range, y1.fillna(0), y2.fillna(0), y3.fillna(0), y4.fillna(0), y5.fillna(0), y6.fillna(0), y7.fillna(0), y8.fillna(0), labels=policy_labels)
     #plt.plot(range(len(school_closing)), school_closing['C1NV_School closing'].astype(float), 'b', label='Non-Vaccinated')
     #plt.plot(range(len(school_closing)), school_closing['C1V_School closing'].astype(float), 'g', label='Vaccinated')
@@ -68,10 +71,11 @@ def nyc_containment_closing_2(state):
     plt.title(f'Containment and Closure Policies of Partially Required Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
+    plt.savefig(f'./plots/{state}2.png')
     plt.show()
 
 
-def nyc_containment_closing_3(state):
+def containment_closing_3(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 3
     func = lambda x: 1 if x >= threshold else 0
@@ -91,6 +95,7 @@ def nyc_containment_closing_3(state):
     start_date = datetime.datetime(2020, 1, 1)
     x_range = [start_date + datetime.timedelta(days=i) for i in range(len(data))]
 
+    plt.figure(figsize=(24,6), dpi=200)
     plt.stackplot(x_range, y1.fillna(0), y2.fillna(0), y3.fillna(0), y4.fillna(0), y5.fillna(0), y6.fillna(0), y7.fillna(0), y8.fillna(0), labels=policy_labels)
     #plt.plot(range(len(school_closing)), school_closing['C1NV_School closing'].astype(float), 'b', label='Non-Vaccinated')
     #plt.plot(range(len(school_closing)), school_closing['C1V_School closing'].astype(float), 'g', label='Vaccinated')
@@ -99,9 +104,10 @@ def nyc_containment_closing_3(state):
     plt.title(f'Containment and Closure Policies of Required Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
+    plt.savefig(f'./plots/{state}3.png')
     plt.show()
 
-def nyc_containment_closing_4(state):
+def containment_closing_4(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 4
     func = lambda x: 1 if x >= threshold else 0
@@ -122,6 +128,7 @@ def nyc_containment_closing_4(state):
     start_date = datetime.datetime(2020, 1, 1)
     x_range = [start_date + datetime.timedelta(days=i) for i in range(len(data))]
 
+    plt.figure(figsize=(24,6), dpi=200)
     plt.stackplot(x_range, y1.fillna(0), y2.fillna(0), y3.fillna(0), y4.fillna(0), y5.fillna(0), y6.fillna(0), y7.fillna(0), y8.fillna(0), labels=policy_labels)
     #plt.plot(range(len(school_closing)), school_closing['C1NV_School closing'].astype(float), 'b', label='Non-Vaccinated')
     #plt.plot(range(len(school_closing)), school_closing['C1V_School closing'].astype(float), 'g', label='Vaccinated')
@@ -130,11 +137,13 @@ def nyc_containment_closing_4(state):
     plt.title(f'Containment and Closure Policies of Required Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
+    plt.savefig(f'./plots/{state}4.png')
     plt.show()
 
 if __name__ == '__main__':
     read_data()
-    nyc_containment_closing_1('New York')
-    nyc_containment_closing_2('New York')
-    nyc_containment_closing_3('New York')
-    nyc_containment_closing_4('New York')
+    containment_closing_1('New York')
+    containment_closing_4('New York')
+
+    containment_closing_1('Colorado')
+    containment_closing_4('Colorado')
