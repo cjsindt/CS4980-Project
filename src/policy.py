@@ -40,7 +40,7 @@ def containment_closing_1(state):
     plt.title(f'Containment and Closure Policies of at Least Recommended Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
-    plt.savefig(f'./plots/{state}1.png')
+    plt.savefig(f'./plots/{state}_containment_closure_1.png')
     plt.show()
 
 def containment_closing_2(state):
@@ -71,7 +71,7 @@ def containment_closing_2(state):
     plt.title(f'Containment and Closure Policies of Partially Required Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
-    plt.savefig(f'./plots/{state}2.png')
+    plt.savefig(f'./plots/{state}_containment_closure_2.png')
     plt.show()
 
 
@@ -104,7 +104,7 @@ def containment_closing_3(state):
     plt.title(f'Containment and Closure Policies of Required Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
-    plt.savefig(f'./plots/{state}3.png')
+    plt.savefig(f'./plots/{state}_containment_closure_3.png')
     plt.show()
 
 def containment_closing_4(state):
@@ -137,7 +137,7 @@ def containment_closing_4(state):
     plt.title(f'Containment and Closure Policies of Required Status for {state} State')
     #plt.yticks([0,1,2,3], ticks)
     plt.legend()
-    plt.savefig(f'./plots/{state}4.png')
+    plt.savefig(f'./plots/{state}_containment_closure_4.png')
     plt.show()
 
 if __name__ == '__main__':
