@@ -46,10 +46,11 @@ def get_policy(policy, thresh=1, region=''):
 
 
 def get_cases(region, years=[2020, 2021, 2022]):
-    print(f'REGION==\"{region}\" & {" | ".join([f"YEAR == {y}" for y in years])}')
     data = casedata.query(f'REGION==\"{region}\" & ({" | ".join([f"YEAR == {y}" for y in years])})')
     data = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
     result = []
+
+    # because case data is by week, spread it out to be by day to match policy data
     for d in range(len(data)):
         for i in range(7):
             result.append(data[d])
@@ -65,11 +66,8 @@ if __name__ == '__main__':
     t = get_policy(containment_closing, region='New York')
     g = get_cases('New York')
     b = get_cases('New York', years=[2017,2018,2019])
-    print(b)
-    plt.plot(range(len(t)), t)
-    plt.plot(range(len(g)), g)
-    plt.plot(range(len(b)), b)
+    plt.plot(range(len(t)), t, label='Policy')
+    plt.plot(range(len(g)), g, label='2020-2022')
+    plt.plot(range(len(b)), b, label='2017-2019')
+    plt.legend()
     plt.show()
-
-    
-    
