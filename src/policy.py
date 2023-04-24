@@ -11,7 +11,7 @@ def read_data():
     data2022 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2022.csv', dtype=str)
     all_data = pd.concat([data2020, data2021, data2022])
 
-
+# Plots all policies relating to containment and closing for a given state that meet a threshold of at least 1 (According to OxCGRT thresholds)
 def containment_closing_1(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 1
@@ -43,6 +43,8 @@ def containment_closing_1(state):
     plt.savefig(f'./plots/{state}_containment_closure_1.png')
     plt.show()
 
+# Plots all policies relating to containment and closing for a given state that meet a threshold of at least 2 (According to OxCGRT thresholds)
+# If a policy does not have a possible ranking of 2, it is included if it is at its max ranking
 def containment_closing_2(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 2
@@ -75,6 +77,8 @@ def containment_closing_2(state):
     plt.show()
 
 
+# Plots all policies relating to containment and closing for a given state that meet a threshold of at least 3 (According to OxCGRT thresholds)
+# If a policy does not have a possible ranking of 3, it is included if it is at its max ranking
 def containment_closing_3(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 3
@@ -107,6 +111,10 @@ def containment_closing_3(state):
     plt.savefig(f'./plots/{state}_containment_closure_3.png')
     plt.show()
 
+
+
+# Plots all policies relating to containment and closing for a given state that meet a threshold of at least 4 (According to OxCGRT thresholds)
+# If a policy does not have a possible ranking of 4, it is included if it is at its max ranking
 def containment_closing_4(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 4
