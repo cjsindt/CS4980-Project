@@ -30,12 +30,12 @@ def get_policy(policy, thresh=1, region=''):
     func = lambda x: 1 if x >= thresh else 0
 
     if isinstance(policy, str):
-        return data[policy].astype(float).apply(func)
+        return data.reset_index()[policy].astype(float).apply(func)
     
     elif isinstance(policy, list):
         p_list = []
         for e in policy:
-            p_list.append(data[e].astype(float).apply(func))
+            p_list.append(data.reset_index()[e].astype(float).apply(func))
         result = p_list[0]
         for e in p_list[1:]:
             result = result.add(e, fill_value=0)
@@ -45,9 +45,15 @@ def get_policy(policy, thresh=1, region=''):
         print('Invalid Policy data type')
 
 
-def get_cases():
-    pass
-
+def get_cases(region, years=[2020, 2021, 2022]):
+    print(f'REGION==\"{region}\" & {" | ".join([f"YEAR == {y}" for y in years])}')
+    data = casedata.query(f'REGION==\"{region}\" & ({" | ".join([f"YEAR == {y}" for y in years])})')
+    data = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
+    result = []
+    for d in range(len(data)):
+        for i in range(7):
+            result.append(data[d])
+    return result
 
 def correlate():
     pass
@@ -56,7 +62,14 @@ def correlate():
 if __name__ == '__main__':
     read_data()
 
-    t = get_policy('C1E_School closing', region='New York')
+    t = get_policy(containment_closing, region='New York')
+    g = get_cases('New York')
+    b = get_cases('New York', years=[2017,2018,2019])
+    print(b)
     plt.plot(range(len(t)), t)
+    plt.plot(range(len(g)), g)
+    plt.plot(range(len(b)), b)
     plt.show()
+
+    
     
