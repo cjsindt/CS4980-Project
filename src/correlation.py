@@ -13,6 +13,22 @@ containment_closing = ['C1E_School closing',
                        'C8E_International travel controls']
 
 
+economic = ['E1E_Income support',
+            'E2E_Debt/contract relief',
+            'E3E_Fiscal measures',
+            'E4E_International support']
+
+
+health_system = ['H1E_Public information campaigns',
+                 'H2E_Testing policy',
+                 'H3E_Contact tracing',
+                 'H4E_Emergency investment in healthcare',
+                 'H5E_Investment in vaccines',
+                 'H6E_Facial Coverings',
+                 'H7E_Vaccination policy',
+                 'H8E_Protection of elderly people']
+
+
 def read_data():
     global policydata2020, policydata2021, policydata2022, all_policydata, casedata
     policydata2020 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2020.csv', dtype=str)
@@ -66,7 +82,7 @@ def correlate():
 if __name__ == '__main__':
     read_data()
 
-    t = get_policy(containment_closing, region='New York')
+    t = get_policy(health_system, region='New York')
     g = get_cases('New York')
     b = get_cases('New York', years=[2017,2018,2019])
     plt.plot(range(len(t)), t, label='Policy')
