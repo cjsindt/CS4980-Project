@@ -10,7 +10,7 @@ def read_data():
     policydata2022 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2022.csv', dtype=str)
     all_policydata = pd.concat([policydata2020, policydata2021, policydata2022])
 
-    casedata = pd.read_csv('./data/ILINet.csv')
+    casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
 

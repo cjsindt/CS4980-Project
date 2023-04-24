@@ -1,3 +1,9 @@
+Data Sets
+
+Data stored in /src/data/FluView/ sourced from https://gis.cdc.gov/grasp/fluview/fluportaldashboard.html
+Data for the entire nation, grouped by state, was selected over all possible seasons.
+
+
 policy.py
 
 This file requires pandas and matplotlib.
