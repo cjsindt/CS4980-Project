@@ -150,6 +150,8 @@ def containment_closing_4(state):
 
 if __name__ == '__main__':
     read_data()
+
+    # add new plots here
     containment_closing_1('New York')
     containment_closing_4('New York')
 

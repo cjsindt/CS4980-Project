@@ -14,4 +14,10 @@ Naming conventions follow the same pattern for different thresholds and categori
 To generate new plots, call the provided functions at the bottom of the file.
 Examples are given already for New York and Colorado.
 
+
+
+
 correlation.py
+
+To run:
+    python3 correlation.py
