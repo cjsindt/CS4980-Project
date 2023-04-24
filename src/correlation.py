@@ -45,6 +45,7 @@ def get_policy(policy, thresh=1, region=''):
         print('Invalid Policy data type')
 
 
+# Takes a region of interest and a list of years and outputs a list of the weekly % unweighted ILI from the FluView data
 def get_cases(region, years=[2020, 2021, 2022]):
     data = casedata.query(f'REGION==\"{region}\" & ({" | ".join([f"YEAR == {y}" for y in years])})')
     data = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
@@ -54,7 +55,9 @@ def get_cases(region, years=[2020, 2021, 2022]):
     for d in range(len(data)):
         for i in range(7):
             result.append(data[d])
+
     return result
+
 
 def correlate():
     pass
