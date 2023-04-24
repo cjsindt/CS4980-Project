@@ -44,7 +44,6 @@ def containment_closing_1(state):
     plt.show()
 
 # Plots all policies relating to containment and closing for a given state that meet a threshold of at least 2 (According to OxCGRT thresholds)
-# If a policy does not have a possible ranking of 2, it is included if it is at its max ranking
 def containment_closing_2(state):
     data = all_data[all_data['RegionName'] == state]
     threshold = 2

@@ -4,6 +4,8 @@ Data stored in /src/data/FluView/ sourced from https://gis.cdc.gov/grasp/fluview
 Data for the entire nation, grouped by state, was selected over all possible seasons.
 
 
+
+----------------------------------------------------------------------------------------------------
 policy.py
 
 This file requires pandas and matplotlib.
@@ -22,7 +24,7 @@ Examples are given already for New York and Colorado.
 
 
 
-
+----------------------------------------------------------------------------------------------------
 correlation.py
 
 To run:
