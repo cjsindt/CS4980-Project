@@ -81,12 +81,25 @@ def correlate():
 
 if __name__ == '__main__':
     read_data()
+    epiweek_start = 40*7
+    epi_length = 32
 
-    t = get_policy(health_system, region='New York')
-    g = get_cases('New York')
-    b = get_cases('New York', years=[2017,2018,2019])
-    plt.plot(range(len(t)), t, label='Policy')
-    plt.plot(range(len(g)), g, label='2020-2022')
-    plt.plot(range(len(b)), b, label='2017-2019')
+    state = 'New York'
+
+    t = get_policy(containment_closing, region=state)
+    g = get_cases(state)
+    b = get_cases(state, years=[2017,2018,2019])
+    plt.plot(range(len(t)), t, label='Total Number of Policies Enacted', color='blue')
+    plt.xlabel('Day #')
+    plt.ylabel('% Unweighted ILI')
+    plt.twinx()
+    plt.plot(range(len(g)), g, label='2020-2022 % Unweighted ILI', color='red')
+    #plt.plot(range(len(b)), b, label='2017-2019')
+    plt.fill([0, 20*7, 20*7, 0], [0, 0, max(t), max(t)], 'b', alpha=0.2, label='2019-2020 Flu Season')
+    plt.fill([epiweek_start, epiweek_start + epi_length*7, epiweek_start + epi_length*7, epiweek_start], [0, 0, max(t), max(t)], 'r', alpha=0.2, label='2020-2021 Flu Season')
+    plt.fill([epiweek_start+365, epiweek_start + epi_length*7 + 365, epiweek_start + epi_length*7 + 365, epiweek_start + 365], [0, 0, max(t), max(t)], 'y', alpha=0.2, label='2021-2022 Flu Season')
+    plt.fill([epiweek_start+365*2, 1095, 1095, epiweek_start + 365*2], [0, 0, max(t), max(t)], 'g', alpha=0.2, label='2022-2023 Flu Season')
+    plt.title(f'Number of Policies and % Unweighted ILI for {state} State')
+    plt.ylabel('Total Policies')
     plt.legend()
     plt.show()

@@ -54,5 +54,7 @@ if __name__ == '__main__':
     read_data()
     years = list(range(2011,2023))
 
-    print(get_peaks(years=years[:-3]))
-    avg_peaks(get_peaks(years=years[:-3]))
+    print(get_peaks(years=years[:-3], state='New York'))
+    avg_peaks(get_peaks(years=years[:-3], state='New York'))
+
+    avg_peaks(get_peaks(years = [2020,2021,2022], state='New York'))
