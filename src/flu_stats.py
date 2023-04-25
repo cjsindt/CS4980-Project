@@ -31,6 +31,11 @@ def avg_peaks(peaks):
     epiweeks = [t[1] for t in peaks]
     print(f'ILI:\n\tmin: {min(ili)}\n\tmax: {max(ili)}\n\tavg: {sum(ili)/len(ili)}')
     print(f'Epiweeks:\n\tmin: {min(epiweeks)}\n\tmax: {max(epiweeks)}\n\tavg: {sum(epiweeks)/len(epiweeks)}')
+    plt.boxplot(ili, vert=False)
+    plt.show()
+    plt.clf()
+    plt.boxplot(epiweeks, vert=False)
+    plt.show()
 
 
 # helper function for avg_peak()
@@ -46,6 +51,8 @@ def aggregate_cases(cases):
 
 if __name__ == '__main__':
     read_data()
+    years = list(range(2011,2023))
+    print(years[:-3])
 
-    print(get_peaks(years=[2015,2016,2017,2018,2019]))
-    avg_peaks(get_peaks(years=[2015,2016,2017,2018,2019]))
+    print(get_peaks(years=years[:-3]))
+    avg_peaks(get_peaks(years=years[:-3]))
