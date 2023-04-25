@@ -27,7 +27,11 @@ def get_peaks(years=[2020, 2021, 2022], state=''):
 
 # given a list of peaks and their epiweeks, average each to figure out the average and range of peaks and the average and range of epiweeks in which they occur
 def avg_peaks(peaks):
-    pass
+    ili = [t[0] for t in peaks]
+    epiweeks = [t[1] for t in peaks]
+    print(f'ILI:\n\tmin: {min(ili)}\n\tmax: {max(ili)}\n\tavg: {sum(ili)/len(ili)}')
+    print(f'Epiweeks:\n\tmin: {min(epiweeks)}\n\tmax: {max(epiweeks)}\n\tavg: {sum(epiweeks)/len(epiweeks)}')
+
 
 # helper function for avg_peak()
 # takes case data from query in avg_peak and aggregates it into epiweeks
@@ -44,3 +48,4 @@ if __name__ == '__main__':
     read_data()
 
     print(get_peaks(years=[2015,2016,2017,2018,2019]))
+    avg_peaks(get_peaks(years=[2015,2016,2017,2018,2019]))
