@@ -26,6 +26,7 @@ def get_peaks(years=[2020, 2021, 2022], state=''):
     
 
 # given a list of peaks and their epiweeks, average each to figure out the average and range of peaks and the average and range of epiweeks in which they occur
+# generates box plots for each
 def avg_peaks(peaks):
     ili = [t[0] for t in peaks]
     epiweeks = [t[1] for t in peaks]
@@ -52,7 +53,6 @@ def aggregate_cases(cases):
 if __name__ == '__main__':
     read_data()
     years = list(range(2011,2023))
-    print(years[:-3])
 
     print(get_peaks(years=years[:-3]))
     avg_peaks(get_peaks(years=years[:-3]))
