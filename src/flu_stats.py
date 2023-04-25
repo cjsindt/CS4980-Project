@@ -7,7 +7,9 @@ def read_data():
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
-# takes a list of years and an optional state to calcluate the average peaks from the given years flu seasons
+# takes a list of years and an optional state to calcluate the peaks from the given years flu seasons
+# returns a list of tuples where the first element in the tuple is the peak %Unweighted ILI and the second element is the epiweek in which it occured
+# the index of each tuple corresponds to its year in the input list
 def get_peaks(years=[2020, 2021, 2022], state=''):
     peaks = []
     for y in years:
@@ -38,4 +40,4 @@ def aggregate_cases(cases):
 if __name__ == '__main__':
     read_data()
 
-    print(get_peaks(years=[2015, 2016,2017,2018,2019]))
+    print(get_peaks(years=[2015,2016,2017,2018,2019]))
