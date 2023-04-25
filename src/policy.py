@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
+import os
 
 
 # fills 4 variables (data2020, data2021, data2022, all_data) with the raw USA csv data from 2020-2022
@@ -148,6 +149,9 @@ def containment_closing_4(state):
     plt.show()
 
 if __name__ == '__main__':
+    if not os.path.exists('./plots/'):
+        os.makedirs('./plots')
+        
     read_data()
 
     # add new plots here
