@@ -25,6 +25,9 @@ def get_peaks(years=[2020, 2021, 2022], state=''):
     return peaks
     
 
+# given a list of peaks and their epiweeks, average each to figure out the average and range of peaks and the average and range of epiweeks in which they occur
+def avg_peaks(peaks):
+    pass
 
 # helper function for avg_peak()
 # takes case data from query in avg_peak and aggregates it into epiweeks
