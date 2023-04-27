@@ -84,11 +84,12 @@ if __name__ == '__main__':
     epiweek_start = 40*7
     epi_length = 32
 
-    state = 'New York'
+    state = 'Colorado'
 
     t = get_policy(containment_closing, region=state)
     g = get_cases(state)
     b = get_cases(state, years=[2017,2018,2019])
+    plt.figure(figsize=(24,6), dpi=200)
     plt.plot(range(len(t)), t, label='Total Number of Policies Enacted', color='blue')
     plt.xlabel('Day #')
     plt.ylabel('% Unweighted ILI')
@@ -102,4 +103,5 @@ if __name__ == '__main__':
     plt.title(f'Number of Policies and % Unweighted ILI for {state} State')
     plt.ylabel('Total Policies')
     plt.legend()
-    plt.show()
+    #plt.show()
+    plt.savefig(f'./plots/PolicyNumVsCase{state}.png')

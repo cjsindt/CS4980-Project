@@ -7,6 +7,22 @@ def read_data():
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
+# Given a list of years, generate a plot of % Unweighted ILI cases over those years
+# Save the figure in /plots/flu_cases_<years>.png
+def plot_cases(years=[2020, 2021, 2022]):
+    cases = casedata.query(f'{" | ".join([f"YEAR == {y}" for y in years])}')
+    cases = cases[['YEAR', 'WEEK', '%UNWEIGHTED ILI']].replace('X', 0).astype(float).groupby(['YEAR', 'WEEK'], as_index=False).mean()
+    print(cases)
+    plt.plot(range(len(cases)), cases['%UNWEIGHTED ILI'], 'r', label='% Unweighted ILI')
+    # shade the flu seasons
+    plt.fill([0, 20, 20, 0], [0, 0, max(cases['%UNWEIGHTED ILI']), max(cases['%UNWEIGHTED ILI'])], 'b', alpha=0.2, label='Flu Season')
+    for i in range(len(years)-1):
+        plt.fill([(40) + (52*i), (40) + (32) + (52*i), (40) + (32) + (52*i), (40) + (52*i)], [0, 0, max(cases['%UNWEIGHTED ILI']), max(cases['%UNWEIGHTED ILI'])], 'b', alpha=0.2)
+    plt.fill([len(cases)-20, len(cases), len(cases), len(cases)-20], [0, 0, max(cases['%UNWEIGHTED ILI']), max(cases['%UNWEIGHTED ILI'])], 'b', alpha=0.2)
+    plt.legend()
+    plt.savefig(f'./plots/flu_cases_{"-".join([str(y) for y in years])}')
+
+
 # takes a list of years and an optional state to calcluate the peaks from the given years flu seasons
 # returns a list of tuples where the first element in the tuple is the peak %Unweighted ILI and the second element is the epiweek in which it occured
 # the index of each tuple corresponds to its year in the input list
@@ -54,7 +70,7 @@ if __name__ == '__main__':
     read_data()
     years = list(range(2011,2023))
 
-    print(get_peaks(years=years[:-3], state='New York'))
-    avg_peaks(get_peaks(years=years[:-3], state='New York'))
+    # print(get_peaks(years=years[:-3], state='New York'))
+    # avg_peaks(get_peaks(years=years[:-3]))
 
-    avg_peaks(get_peaks(years = [2020,2021,2022], state='New York'))
+    plot_cases(years[:-3])
