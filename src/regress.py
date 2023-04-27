@@ -1,4 +1,5 @@
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -55,13 +56,15 @@ if __name__ == '__main__':
     read_data()
 
     state = ''
+    
+    cases = get_cases(state)
+    policies = get_policies(state)
 
-    print(get_cases(state).shape)
-    print(get_policies(state).shape)
+    X_train, X_test, y_train, y_test = train_test_split(policies, cases, test_size=0.25, random_state=42)
 
     model = LinearRegression()
 
-    model.fit(get_policies(state), get_cases(state))
+    model.fit(X_train, y_train)
 
     for i in range(8):
         print(f'{containment_closing[i]}: {model.coef_[i]}')
