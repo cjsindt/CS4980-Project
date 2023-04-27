@@ -51,8 +51,6 @@ def get_policies(state = '', years=[2020, 2021, 2022]):
     return policies
 
 
-
-
 if __name__ == '__main__':
     read_data()
 
@@ -65,4 +63,5 @@ if __name__ == '__main__':
 
     model.fit(get_policies(state), get_cases(state))
 
-    print(model.coef_)
+    for i in range(8):
+        print(f'{containment_closing[i]}: {model.coef_[i]}')
