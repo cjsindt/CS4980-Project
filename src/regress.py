@@ -15,6 +15,20 @@ containment_closing = ['C1E_School closing',
                        'C7E_Restrictions on internal movement',
                        'C8E_International travel controls']
 
+economic = ['E1E_Income support',
+            'E2E_Debt/contract relief',
+            'E3E_Fiscal measures',
+            'E4E_International support']
+
+health_system = ['H1E_Public information campaigns',
+                 'H2E_Testing policy',
+                 'H3E_Contact tracing',
+                 'H4E_Emergency investment in healthcare',
+                 'H5E_Investment in vaccines',
+                 'H6E_Facial Coverings',
+                 'H7E_Vaccination policy',
+                 'H8E_Protection of elderly people']
+
 def read_data():
     global policydata2020, policydata2021, policydata2022, all_policydata, casedata
     policydata2020 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2020.csv', dtype=str)
@@ -25,13 +39,14 @@ def read_data():
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
-def get_cases(state = '', years=[2020, 2021, 2022]):
+def get_cases(states = [], years=[2020, 2021, 2022]):
     result = []
-    if len(state) == 0:
+    if len(states) == 0:
         data = casedata.query(f'({" | ".join([f"YEAR == {y}" for y in years])})')
         data = data[['WEEK', 'YEAR', '%UNWEIGHTED ILI']].replace('X', 0).astype(float).groupby(['YEAR', 'WEEK']).mean()
     else:
-        data = casedata.query(f'REGION==\"{state}\" & ({" | ".join([f"YEAR == {y}" for y in years])})')
+        regions = " | ".join([f'REGION == \"{s}\"' for s in states])
+        data = casedata.query(f'({regions}) & ({" | ".join([f"YEAR == {y}" for y in years])})')
     
     data = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
 
@@ -43,13 +58,13 @@ def get_cases(state = '', years=[2020, 2021, 2022]):
     return np.array(result[:1096])
 
 
-def get_policies(state = ''):
-    if len(state) == 0:
+def get_policies(states = [], category=containment_closing):
+    if len(states) == 0:
         data = all_policydata.query(f'Jurisdiction == \"NAT_TOTAL\"')
     else:
-        data = all_policydata[all_policydata['RegionName'] == state]
+        data = all_policydata.query(" | ".join([f'RegionName == \"{s}\"' for s in states]))
 
-    policies = data[[c for c in containment_closing]].fillna(0).astype(float).to_numpy()
+    policies = data[[c for c in category]].fillna(0).astype(float).to_numpy()
 
     return policies
 
@@ -64,7 +79,7 @@ def lin_reg(X, y, labels=containment_closing):
     model.fit(X_train, y_train)
 
     # coefficients
-    for i in range(8):
+    for i in range(len(category)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
     y_pred = model.predict(X_test)
@@ -88,7 +103,7 @@ def ridge_reg(X, y, labels=containment_closing):
     model.fit(X_train, y_train)
 
     # coefficients
-    for i in range(8):
+    for i in range(len(category)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
     
@@ -115,20 +130,25 @@ def corr_mat(X, y, labels=containment_closing):
 
     # Print the features and their correlation coefficients
     for i in sorted_idxs:
-        print(f'{containment_closing[i]}: {corr_coeffs[i]}')
+        print(f'{labels[i]}: {corr_coeffs[i]}')
 
 
 if __name__ == '__main__':
     read_data()
 
-    state = ''
-    
-    cases = get_cases(state)
-    policies = get_policies(state)
 
-    lin_reg(policies, cases)
-    print('\n----------------------------\n')
-    ridge_reg(policies, cases)
-    print('\n----------------------------\n')
-    corr_mat(policies, cases)
+    states = ['New York']
+    category = health_system
+
+    cases = get_cases(states)
+    policies = get_policies(states, category=category)
+
+    print(f'State: {states}\nCategory: {category}')
+
+    print('\n------ Linear Regression ------\n')
+    lin_reg(policies, cases, labels=category)
+    print('\n------ Ridge Regression ------\n')
+    ridge_reg(policies, cases, labels=category)
+    print('\n------ Correlation Matrix ------\n')
+    corr_mat(policies, cases, labels=category)
 
