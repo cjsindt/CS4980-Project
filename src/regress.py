@@ -1,4 +1,4 @@
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import pandas as pd
@@ -54,9 +54,8 @@ def get_policies(state = '', years=[2020, 2021, 2022]):
 
 
 # generates a linear regression model for the given data and prints different metrics to test the model
-# Calculates R_square, mean of residuals, and checks for homoscedasticity
+# Calculates R_square, mean of residuals
 def lin_reg(X, y, labels=containment_closing):
-    
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
     model = LinearRegression()
@@ -67,16 +66,42 @@ def lin_reg(X, y, labels=containment_closing):
     for i in range(8):
         print(f'{labels[i]}: {model.coef_[i]}')
 
-    y_pred = model.predict(X_train)
+    y_pred = model.predict(X_test)
 
     # r squared
-    print("R squared: {}".format(r2_score(y_true=y_train,y_pred=y_pred)))
+    r_squared = r2_score(y_test, y_pred)
+    print(f'R-Squared score: {r_squared}')
 
     # mean of residuals
-    residuals = y_train-y_pred
+    residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
 
+
+# generates a ridge regression model for the given data and prints different metrics to evaluate the model
+def ridge_reg(X, y, labels=containment_closing):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+    model = Ridge()
+
+    model.fit(X_train, y_train)
+
+    # coefficients
+    for i in range(8):
+        print(f'{labels[i]}: {model.coef_[i]}')
+
+    
+    y_pred = model.predict(X_test)
+
+    # r squared
+    r_squared = r2_score(y_test, y_pred)
+    print(f'R-Squared score: {r_squared}')
+    
+    # mean of residuals
+    residuals = y_test-y_pred
+    mean_residuals = np.mean(residuals)
+    print("Mean of Residuals {}".format(mean_residuals))
+    
 
 if __name__ == '__main__':
     read_data()
@@ -87,3 +112,6 @@ if __name__ == '__main__':
     policies = get_policies(state)
 
     lin_reg(policies, cases)
+    print('\n----------------------------\n')
+    ridge_reg(policies, cases)
+
