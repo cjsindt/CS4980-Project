@@ -1,4 +1,5 @@
 from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import pandas as pd
@@ -42,13 +43,13 @@ def get_cases(state = '', years=[2020, 2021, 2022]):
     return np.array(result[:1096])
 
 
-def get_policies(state = '', years=[2020, 2021, 2022]):
+def get_policies(state = ''):
     if len(state) == 0:
         data = all_policydata.query(f'Jurisdiction == \"NAT_TOTAL\"')
     else:
         data = all_policydata[all_policydata['RegionName'] == state]
 
-    policies = data[[c for c in containment_closing]].fillna(0).to_numpy()
+    policies = data[[c for c in containment_closing]].fillna(0).astype(float).to_numpy()
 
     return policies
 
@@ -101,7 +102,21 @@ def ridge_reg(X, y, labels=containment_closing):
     residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
-    
+
+
+# generates a correlation matrix
+def corr_mat(X, y, labels=containment_closing):
+    matrix = np.corrcoef(X.T, y)
+
+    corr_coeffs = matrix[:-1, -1]
+
+    # Sort the correlation coefficients in descending order
+    sorted_idxs = np.argsort(np.abs(corr_coeffs))[::-1]
+
+    # Print the features and their correlation coefficients
+    for i in sorted_idxs:
+        print(f'{containment_closing[i]}: {corr_coeffs[i]}')
+
 
 if __name__ == '__main__':
     read_data()
@@ -114,4 +129,6 @@ if __name__ == '__main__':
     lin_reg(policies, cases)
     print('\n----------------------------\n')
     ridge_reg(policies, cases)
+    print('\n----------------------------\n')
+    corr_mat(policies, cases)
 
