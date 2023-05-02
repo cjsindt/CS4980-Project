@@ -103,5 +103,5 @@ if __name__ == '__main__':
     plt.title(f'Number of Policies and % Unweighted ILI for {state} State')
     plt.ylabel('Total Policies')
     plt.legend()
-    #plt.show()
+    plt.show()
     plt.savefig(f'./plots/PolicyNumVsCase{state}.png')
