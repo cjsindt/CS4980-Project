@@ -133,12 +133,41 @@ def corr_mat(X, y, labels=containment_closing):
         print(f'{labels[i]}: {corr_coeffs[i]}')
 
 
+# generates a polynomial regression model and prints metrics to evaluate the model
+# evaluates the model based on r_square and mean of residuals
+def poly_reg(X, y, degree=2, labels=containment_closing):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+    poly = PolynomialFeatures(degree=degree)
+    
+    X_poly_train = poly.fit_transform(X_train)
+    X_poly_test = poly.fit_transform(X_test)
+    
+    model = LinearRegression()
+
+    model.fit(X_poly_train, y_train)
+
+    y_pred = model.predict(X_poly_test)
+
+    # coefficients
+    for i in range(len(category)):
+        print(f'{labels[i]}: {model.coef_[i]}')
+
+    # r squared
+    r_squared = r2_score(y_test, y_pred)
+    print(f'R-Squared score: {r_squared}')
+
+    # mean of residuals
+    residuals = y_test-y_pred
+    mean_residuals = np.mean(residuals)
+    print("Mean of Residuals {}".format(mean_residuals))
+    
+
 if __name__ == '__main__':
     read_data()
 
-
-    states = ['New York']
-    category = health_system
+    states = []
+    category = containment_closing
 
     cases = get_cases(states)
     policies = get_policies(states, category=category)
@@ -149,6 +178,8 @@ if __name__ == '__main__':
     lin_reg(policies, cases, labels=category)
     print('\n------ Ridge Regression ------\n')
     ridge_reg(policies, cases, labels=category)
+    print('\n------ Polynomial Regression ------\n')
+    poly_reg(policies, cases, degree=2, labels=category)
     print('\n------ Correlation Matrix ------\n')
     corr_mat(policies, cases, labels=category)
 

@@ -20,6 +20,8 @@ def plot_cases(years=[2020, 2021, 2022]):
         plt.fill([(40) + (52*i), (40) + (32) + (52*i), (40) + (32) + (52*i), (40) + (52*i)], [0, 0, max(cases['%UNWEIGHTED ILI']), max(cases['%UNWEIGHTED ILI'])], 'b', alpha=0.2)
     plt.fill([len(cases)-20, len(cases), len(cases), len(cases)-20], [0, 0, max(cases['%UNWEIGHTED ILI']), max(cases['%UNWEIGHTED ILI'])], 'b', alpha=0.2)
     plt.legend()
+    plt.title(f'ILI Case Data for the Years {years[0]} - {years[-1]}')
+    plt.xticks([i*52 for i in range(len(years))], years)
     plt.savefig(f'./plots/flu_cases_{"-".join([str(y) for y in years])}')
 
 
@@ -73,4 +75,4 @@ if __name__ == '__main__':
     # print(get_peaks(years=years[:-3], state='New York'))
     # avg_peaks(get_peaks(years=years[:-3]))
 
-    plot_cases(years[:-3])
+    plot_cases(years[4:])
