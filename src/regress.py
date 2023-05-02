@@ -1,6 +1,6 @@
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import r2_score
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -134,11 +134,34 @@ def corr_mat(X, y, labels=containment_closing):
 
 
 # generates a polynomial regression model and prints metrics to evaluate the model
+# calculates the optimal degree using MSE score
 # evaluates the model based on r_square and mean of residuals
-def poly_reg(X, y, degree=2, labels=containment_closing):
+def poly_reg(X, y, labels=containment_closing):
+
+    degrees = np.arange(1, 9)
+
+    cv_method = KFold(n_splits=5, shuffle=True, random_state=0)
+
+    scores = []
+
+    for degree in degrees:
+        poly_features = PolynomialFeatures(degree=degree)
+        X_Poly = poly_features.fit_transform(X)
+
+        model = LinearRegression()
+        score = np.mean(cross_val_score(model, X_Poly, y, cv=cv_method, scoring='neg_mean_squared_error'))
+
+        scores.append(-score)
+
+    best_degree = degrees[np.argmin(scores)]
+
+    print(scores)
+
+    print(f'Best Degree: {best_degree}')
+
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
-    poly = PolynomialFeatures(degree=degree)
+    poly = PolynomialFeatures(degree=best_degree)
     
     X_poly_train = poly.fit_transform(X_train)
     X_poly_test = poly.fit_transform(X_test)
@@ -161,7 +184,7 @@ def poly_reg(X, y, degree=2, labels=containment_closing):
     residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
-    
+
 
 if __name__ == '__main__':
     read_data()
@@ -179,7 +202,7 @@ if __name__ == '__main__':
     print('\n------ Ridge Regression ------\n')
     ridge_reg(policies, cases, labels=category)
     print('\n------ Polynomial Regression ------\n')
-    poly_reg(policies, cases, degree=2, labels=category)
+    poly_reg(policies, cases, labels=category)
     print('\n------ Correlation Matrix ------\n')
     corr_mat(policies, cases, labels=category)
 
