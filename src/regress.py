@@ -39,7 +39,7 @@ def read_data():
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
-def get_cases(states = [], years=[2020, 2021, 2022]):
+def get_cases(states=[], years=[2020, 2021, 2022]):
     result = []
     if len(states) == 0:
         data = casedata.query(f'({" | ".join([f"YEAR == {y}" for y in years])})')
@@ -58,7 +58,7 @@ def get_cases(states = [], years=[2020, 2021, 2022]):
     return np.array(result[:1096])
 
 
-def get_policies(states = [], category=containment_closing):
+def get_policies(states=[], category=containment_closing):
     if len(states) == 0:
         data = all_policydata.query(f'Jurisdiction == \"NAT_TOTAL\"')
     else:
