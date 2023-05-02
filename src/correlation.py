@@ -30,13 +30,21 @@ health_system = ['H1E_Public information campaigns',
 
 
 def read_data():
-    global policydata2020, policydata2021, policydata2022, all_policydata, casedata
+    global policydata2020, policydata2021, policydata2022, all_policydata, casedata, casedatachlam2018, casedatachlam2019, casedatachlam2020, casedatachlam2021, all_chlam
     policydata2020 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2020.csv', dtype=str)
     policydata2021 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2021.csv', dtype=str)
     policydata2022 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2022.csv', dtype=str)
     all_policydata = pd.concat([policydata2020, policydata2021, policydata2022])
 
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
+    casedatachlam2018 = pd.read_csv('./data/Chlamydia/Chlamydia 2018.csv')
+    casedatachlam2019 = pd.read_csv('./data/Chlamydia/Chlamydia 2019.csv')
+    casedatachlam2020 = pd.read_csv('./data/Chlamydia/Chlamydia 2020.csv')
+    casedatachlam2021 = pd.read_csv('./data/Chlamydia/Chlamydia 2021.csv')
+    chlams = [casedatachlam2018, casedatachlam2019, casedatachlam2020, casedatachlam2021]
+    for chlam in chlams:
+        chlam.sort_values(["MMWR Week"], axis=0, ascending=[True], inplace=True)
+    all_chlam = pd.concat(chlams)
 
 
 # takes a string or list of policies, a threshold, and a region (State), and returns a 1 for each policy that meets
@@ -64,13 +72,35 @@ def get_policy(policy, thresh=1, region=''):
 # Takes a region of interest and a list of years and outputs a list of the weekly % unweighted ILI from the FluView data
 def get_cases(region, years=[2020, 2021, 2022]):
     data = casedata.query(f'REGION==\"{region}\" & ({" | ".join([f"YEAR == {y}" for y in years])})')
-    data = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
+    d1 = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
+    #d2 = data.reset_index()['WEEK'].astype(int)
     result = []
 
     # because case data is by week, spread it out to be by day to match policy data
-    for d in range(len(data)):
+    for d in range(len(d1)):
+        #print(str(d) + ": " + str(d1[d]) + ", from week: " + str(d2[d]))
         for i in range(7):
-            result.append(data[d])
+            result.append(d1[d])
+
+    return result
+
+def get_chlam(region, years=[2020, 2021]):
+    r = region.upper()
+    data = all_chlam.query(f'`Reporting Area`==\"{r}\" & ({" | ".join([f"`MMWR Year` == {y}" for y in years])})')
+    #data = all_chlam.query(f'Reporting Area==\"{region}\" & ({" | ".join([f"MMWR Year == {y}" for y in years])})')
+    d1 = data.reset_index()['Chlamydia trachomatis infection, Current week'].astype(float)
+    #d2 = data.reset_index()['MMWR Week'].astype(int)
+    result = []
+
+    # as with ILI cases, spread out to match policy data
+    for d in range(len(data)):
+        # if # cases is nan, replace with 0
+        if(d1[d] != d1[d]):
+            d1[d] = 0
+        #print(str(d) + ": " + str(d1[d]) + ", from week: " + str(d2[d]))
+        
+        for i in range(7):
+            result.append(d1[d])
 
     return result
 
@@ -89,12 +119,14 @@ if __name__ == '__main__':
     t = get_policy(containment_closing, region=state)
     g = get_cases(state)
     b = get_cases(state, years=[2017,2018,2019])
+    c = get_chlam(state)
     plt.figure(figsize=(24,6), dpi=200)
     plt.plot(range(len(t)), t, label='Total Number of Policies Enacted', color='blue')
     plt.xlabel('Day #')
     plt.ylabel('% Unweighted ILI')
     plt.twinx()
-    plt.plot(range(len(g)), g, label='2020-2022 % Unweighted ILI', color='red')
+    #plt.plot(range(len(g)), g, label='2020-2022 % Unweighted ILI', color='red')
+    plt.plot(range(len(c)), c, label='2020-2021 # Chlamydia cases', color='purple')
     #plt.plot(range(len(b)), b, label='2017-2019')
     plt.fill([0, 20*7, 20*7, 0], [0, 0, max(t), max(t)], 'b', alpha=0.2, label='2019-2020 Flu Season')
     plt.fill([epiweek_start, epiweek_start + epi_length*7, epiweek_start + epi_length*7, epiweek_start], [0, 0, max(t), max(t)], 'r', alpha=0.2, label='2020-2021 Flu Season')
@@ -104,4 +136,4 @@ if __name__ == '__main__':
     plt.ylabel('Total Policies')
     plt.legend()
     plt.show()
-    plt.savefig(f'./plots/PolicyNumVsCase{state}.png')
+    #plt.savefig(f'./plots/PolicyNumVsCase{state}.png')
