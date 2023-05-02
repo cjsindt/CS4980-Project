@@ -1,7 +1,7 @@
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
-from sklearn.metrics import r2_score
+from sklearn.metrics import r2_score, mean_squared_error
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -88,10 +88,15 @@ def lin_reg(X, y, labels=containment_closing):
     r_squared = r2_score(y_test, y_pred)
     print(f'R-Squared score: {r_squared}')
 
+
     # mean of residuals
     residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
+
+    # MSE
+    mse = mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f'MSE: {mse}')
 
 
 # generates a ridge regression model for the given data and prints different metrics to evaluate the model
@@ -117,6 +122,10 @@ def ridge_reg(X, y, labels=containment_closing):
     residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
+
+    # MSE
+    mse = mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f'MSE: {mse}')
 
 
 # generates a correlation matrix
@@ -184,6 +193,10 @@ def poly_reg(X, y, labels=containment_closing):
     residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
+
+    # MSE
+    mse = mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f'MSE: {mse}')
 
 
 if __name__ == '__main__':
