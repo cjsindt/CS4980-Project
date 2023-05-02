@@ -1,7 +1,7 @@
 from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.preprocessing import PolynomialFeatures
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split, cross_val_score, KFold
+from sklearn.metrics import r2_score, mean_squared_error
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -39,7 +39,7 @@ def read_data():
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
-def get_cases(states = [], years=[2020, 2021, 2022]):
+def get_cases(states=[], years=[2020, 2021, 2022]):
     result = []
     if len(states) == 0:
         data = casedata.query(f'({" | ".join([f"YEAR == {y}" for y in years])})')
@@ -58,7 +58,7 @@ def get_cases(states = [], years=[2020, 2021, 2022]):
     return np.array(result[:1096])
 
 
-def get_policies(states = [], category=containment_closing):
+def get_policies(states=[], category=containment_closing):
     if len(states) == 0:
         data = all_policydata.query(f'Jurisdiction == \"NAT_TOTAL\"')
     else:
@@ -88,10 +88,15 @@ def lin_reg(X, y, labels=containment_closing):
     r_squared = r2_score(y_test, y_pred)
     print(f'R-Squared score: {r_squared}')
 
+
     # mean of residuals
     residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
+
+    # MSE
+    mse = mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f'MSE: {mse}')
 
 
 # generates a ridge regression model for the given data and prints different metrics to evaluate the model
@@ -118,6 +123,10 @@ def ridge_reg(X, y, labels=containment_closing):
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
 
+    # MSE
+    mse = mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f'MSE: {mse}')
+
 
 # generates a correlation matrix
 def corr_mat(X, y, labels=containment_closing):
@@ -133,12 +142,68 @@ def corr_mat(X, y, labels=containment_closing):
         print(f'{labels[i]}: {corr_coeffs[i]}')
 
 
+# generates a polynomial regression model and prints metrics to evaluate the model
+# calculates the optimal degree using MSE score
+# evaluates the model based on r_square and mean of residuals
+def poly_reg(X, y, labels=containment_closing):
+
+    degrees = np.arange(1, 9)
+
+    cv_method = KFold(n_splits=5, shuffle=True, random_state=0)
+
+    scores = []
+
+    for degree in degrees:
+        poly_features = PolynomialFeatures(degree=degree)
+        X_Poly = poly_features.fit_transform(X)
+
+        model = LinearRegression()
+        score = np.mean(cross_val_score(model, X_Poly, y, cv=cv_method, scoring='neg_mean_squared_error'))
+
+        scores.append(-score)
+
+    best_degree = degrees[np.argmin(scores)]
+
+    print(scores)
+
+    print(f'Best Degree: {best_degree}')
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+
+    poly = PolynomialFeatures(degree=best_degree)
+    
+    X_poly_train = poly.fit_transform(X_train)
+    X_poly_test = poly.fit_transform(X_test)
+    
+    model = LinearRegression()
+
+    model.fit(X_poly_train, y_train)
+
+    y_pred = model.predict(X_poly_test)
+
+    # coefficients
+    for i in range(len(category)):
+        print(f'{labels[i]}: {model.coef_[i]}')
+
+    # r squared
+    r_squared = r2_score(y_test, y_pred)
+    print(f'R-Squared score: {r_squared}')
+
+    # mean of residuals
+    residuals = y_test-y_pred
+    mean_residuals = np.mean(residuals)
+    print("Mean of Residuals {}".format(mean_residuals))
+
+    # MSE
+    mse = mean_squared_error(y_pred=y_pred, y_true=y_test)
+    print(f'MSE: {mse}')
+
+
 if __name__ == '__main__':
     read_data()
 
-
-    states = ['New York']
-    category = health_system
+    states = []
+    category = containment_closing
 
     cases = get_cases(states)
     policies = get_policies(states, category=category)
@@ -149,6 +214,8 @@ if __name__ == '__main__':
     lin_reg(policies, cases, labels=category)
     print('\n------ Ridge Regression ------\n')
     ridge_reg(policies, cases, labels=category)
+    print('\n------ Polynomial Regression ------\n')
+    poly_reg(policies, cases, labels=category)
     print('\n------ Correlation Matrix ------\n')
     corr_mat(policies, cases, labels=category)
 

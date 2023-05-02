@@ -104,4 +104,4 @@ if __name__ == '__main__':
     plt.ylabel('Total Policies')
     plt.legend()
     plt.show()
-    #plt.savefig(f'./plots/PolicyNumVsCase{state}.png')
+    plt.savefig(f'./plots/PolicyNumVsCase{state}.png')
