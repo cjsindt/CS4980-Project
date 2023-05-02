@@ -16,18 +16,19 @@ containment_closing = ['C1E_School closing',
                        'C8E_International travel controls']
 
 economic = ['E1E_Income support',
-            'E2E_Debt/contract relief',
-            'E3E_Fiscal measures',
-            'E4E_International support']
+            'E2E_Debt/contract relief']
 
 health_system = ['H1E_Public information campaigns',
                  'H2E_Testing policy',
                  'H3E_Contact tracing',
-                 'H4E_Emergency investment in healthcare',
-                 'H5E_Investment in vaccines',
                  'H6E_Facial Coverings',
                  'H7E_Vaccination policy',
                  'H8E_Protection of elderly people']
+
+investment = ['E3E_Fiscal measures',
+              'E4E_International support',
+              'H4E_Emergency investment in healthcare',
+              'H5E_Investment in vaccines']
 
 def read_data():
     global policydata2020, policydata2021, policydata2022, all_policydata, casedata
