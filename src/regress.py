@@ -6,6 +6,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
+# Lists below are preset policy categories of interest
+# Labels can be found on the OxCGRT
 containment_closing = ['C1E_School closing',
                        'C2E_Workplace closing',
                        'C3E_Cancel public events',
@@ -30,6 +32,8 @@ investment = ['E3E_Fiscal measures',
               'H4E_Emergency investment in healthcare',
               'H5E_Investment in vaccines']
 
+
+# reads in all used datasets for global use
 def read_data():
     global policydata2020, policydata2021, policydata2022, all_policydata, casedata
     policydata2020 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2020.csv', dtype=str)
@@ -40,6 +44,7 @@ def read_data():
     casedata = pd.read_csv('./data/FluView/ILINet.csv')
 
 
+# returns ILI case data for the given state over the given years
 def get_cases(states=[], years=[2020, 2021, 2022]):
     result = []
     if len(states) == 0:
@@ -59,19 +64,20 @@ def get_cases(states=[], years=[2020, 2021, 2022]):
     return np.array(result[:1096])
 
 
+# returns the policies for the given state and category
 def get_policies(states=[], category=containment_closing):
     if len(states) == 0:
         data = all_policydata.query(f'Jurisdiction == \"NAT_TOTAL\"')
     else:
         data = all_policydata.query(" | ".join([f'RegionName == \"{s}\"' for s in states]))
 
-    policies = data[[c for c in category]].fillna(0).astype(float).to_numpy()
+    policies = data[category].fillna(0).astype(float).to_numpy()
 
     return policies
 
 
 # generates a linear regression model for the given data and prints different metrics to test the model
-# Calculates R_square, mean of residuals
+# Calculates R_square, mean of residuals, and MSE
 def lin_reg(X, y, labels=containment_closing):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
 
@@ -80,7 +86,7 @@ def lin_reg(X, y, labels=containment_closing):
     model.fit(X_train, y_train)
 
     # coefficients
-    for i in range(len(category)):
+    for i in range(len(labels)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
     y_pred = model.predict(X_test)
@@ -109,7 +115,7 @@ def ridge_reg(X, y, labels=containment_closing):
     model.fit(X_train, y_train)
 
     # coefficients
-    for i in range(len(category)):
+    for i in range(len(labels)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
     
@@ -203,7 +209,7 @@ def poly_reg(X, y, labels=containment_closing):
 if __name__ == '__main__':
     read_data()
 
-    states = []
+    states = ['Colorado']
     category = containment_closing
 
     cases = get_cases(states)
@@ -219,4 +225,3 @@ if __name__ == '__main__':
     poly_reg(policies, cases, labels=category)
     print('\n------ Correlation Matrix ------\n')
     corr_mat(policies, cases, labels=category)
-
