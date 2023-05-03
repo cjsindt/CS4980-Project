@@ -70,7 +70,9 @@ regress.py
 This file requires sklearn, matplotlib, pandas, and numpy.
 
 To run:
-    python3 regress.py
+    python3 regress_ili.py
+    python3 regress_chlam.py
+    python3 regress_hep.py
 
 Using the data in the src/data directory, this file is used to generate models for different states and using different groups of policy.
 
