@@ -3,7 +3,6 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split, cross_val_score, KFold
 from sklearn.metrics import r2_score, mean_squared_error
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
 
 # Lists below are preset policy categories of interest
@@ -41,27 +40,27 @@ def read_data():
     policydata2022 = pd.read_csv('./data/United States/OxCGRT_USA_differentiated_withnotes_2022.csv', dtype=str)
     all_policydata = pd.concat([policydata2020, policydata2021, policydata2022])
 
-    casedata = pd.read_csv('./data/FluView/ILINet.csv')
+    casedata = pd.read_csv('./data/Hepatitis B, perinatal infection to Hepatitis C, acute.csv')
 
 
-# returns ILI case data for the given state over the given years
+# returns hepatitis C case data for the given state over the given years
 def get_cases(states=[], years=[2020, 2021, 2022]):
     result = []
     if len(states) == 0:
         data = casedata.query(f'({" | ".join([f"YEAR == {y}" for y in years])})')
-        data = data[['WEEK', 'YEAR', '%UNWEIGHTED ILI']].replace('X', 0).astype(float).groupby(['YEAR', 'WEEK']).mean()
+        data = data[['WEEK', 'YEAR', 'Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max']].replace('X', 0).astype(float).groupby(['YEAR', 'WEEK']).mean()
     else:
-        regions = " | ".join([f'REGION == \"{s}\"' for s in states])
+        regions = " | ".join([f'REGION == \"{s.upper()}\"' for s in states])
         data = casedata.query(f'({regions}) & ({" | ".join([f"YEAR == {y}" for y in years])})')
-
-    data = data.reset_index()['%UNWEIGHTED ILI'].astype(float)
+    
+    data = data.reset_index()['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max'].astype(float)
 
     # because case data is by week, spread it out to be by day to match policy data
     for d in range(len(data)):
         for i in range(7):
             result.append(data[d])
 
-    return np.array(result[:1096])
+    return np.array(result[:777])
 
 
 # returns the policies for the given state and category
@@ -73,30 +72,30 @@ def get_policies(states=[], category=containment_closing):
 
     policies = data[category].fillna(0).astype(float).to_numpy()
 
-    return policies
+    return np.array(policies[:777])
 
 
 # generates a linear regression model for the given data and prints different metrics to test the model
 # Calculates R_square, mean of residuals, and MSE
-def lin_reg(X, y, labels=containment_closing):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+def lin_reg(x, y, labels=containment_closing):
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=42)
 
     model = LinearRegression()
 
-    model.fit(X_train, y_train)
+    model.fit(x_train, y_train)
 
     # coefficients
     for i in range(len(labels)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(x_test)
 
     # r squared
     r_squared = r2_score(y_test, y_pred)
     print(f'R-Squared score: {r_squared}')
 
     # mean of residuals
-    residuals = y_test - y_pred
+    residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
 
@@ -106,25 +105,25 @@ def lin_reg(X, y, labels=containment_closing):
 
 
 # generates a ridge regression model for the given data and prints different metrics to evaluate the model
-def ridge_reg(X, y, labels=containment_closing):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+def ridge_reg(x, y, labels=containment_closing):
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=42)
 
     model = Ridge()
 
-    model.fit(X_train, y_train)
+    model.fit(x_train, y_train)
 
     # coefficients
     for i in range(len(labels)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
-    y_pred = model.predict(X_test)
+    y_pred = model.predict(x_test)
 
     # r squared
     r_squared = r2_score(y_test, y_pred)
     print(f'R-Squared score: {r_squared}')
-
+    
     # mean of residuals
-    residuals = y_test - y_pred
+    residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
 
@@ -134,8 +133,8 @@ def ridge_reg(X, y, labels=containment_closing):
 
 
 # generates a correlation matrix
-def corr_mat(X, y, labels=containment_closing):
-    matrix = np.corrcoef(X.T, y)
+def corr_mat(x, y, labels=containment_closing):
+    matrix = np.corrcoef(x.T, y)
 
     corr_coeffs = matrix[:-1, -1]
 
@@ -150,7 +149,8 @@ def corr_mat(X, y, labels=containment_closing):
 # generates a polynomial regression model and prints metrics to evaluate the model
 # calculates the optimal degree using MSE score
 # evaluates the model based on r_square and mean of residuals
-def poly_reg(X, y, labels=containment_closing):
+def poly_reg(x, y, labels=containment_closing):
+
     degrees = np.arange(1, 9)
 
     cv_method = KFold(n_splits=5, shuffle=True, random_state=0)
@@ -159,10 +159,10 @@ def poly_reg(X, y, labels=containment_closing):
 
     for degree in degrees:
         poly_features = PolynomialFeatures(degree=degree)
-        X_Poly = poly_features.fit_transform(X)
+        x_poly = poly_features.fit_transform(x)
 
         model = LinearRegression()
-        score = np.mean(cross_val_score(model, X_Poly, y, cv=cv_method, scoring='neg_mean_squared_error'))
+        score = np.mean(cross_val_score(model, x_poly, y, cv=cv_method, scoring='neg_mean_squared_error'))
 
         scores.append(-score)
 
@@ -172,18 +172,18 @@ def poly_reg(X, y, labels=containment_closing):
 
     print(f'Best Degree: {best_degree}')
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25, random_state=42)
 
     poly = PolynomialFeatures(degree=best_degree)
-
-    X_poly_train = poly.fit_transform(X_train)
-    X_poly_test = poly.fit_transform(X_test)
-
+    
+    x_poly_train = poly.fit_transform(x_train)
+    x_poly_test = poly.fit_transform(x_test)
+    
     model = LinearRegression()
 
-    model.fit(X_poly_train, y_train)
+    model.fit(x_poly_train, y_train)
 
-    y_pred = model.predict(X_poly_test)
+    y_pred = model.predict(x_poly_test)
 
     # coefficients
     for i in range(len(category)):
@@ -194,7 +194,7 @@ def poly_reg(X, y, labels=containment_closing):
     print(f'R-Squared score: {r_squared}')
 
     # mean of residuals
-    residuals = y_test - y_pred
+    residuals = y_test-y_pred
     mean_residuals = np.mean(residuals)
     print("Mean of Residuals {}".format(mean_residuals))
 
@@ -206,7 +206,7 @@ def poly_reg(X, y, labels=containment_closing):
 if __name__ == '__main__':
     read_data()
 
-    states = ['Colorado']
+    states = ['New York']
     category = containment_closing
 
     cases = get_cases(states)

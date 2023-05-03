@@ -17,7 +17,7 @@ def plot_cases(years=[2019, 2020, 2021, 2022]):
     # shade the hepatitis seasons
     plt.fill([0, 20, 20, 0], [0, 0, max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max']), max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max'])], 'b', alpha=0.2, label='Flu Season')
     for i in range(len(years)-1):
-        plt.fill([(40) + (52*i), (40) + (32) + (52*i), (40) + (32) + (52*i), (40) + (52*i)], [0, 0, max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max']), max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max'])], 'b', alpha=0.2)
+        plt.fill([40 + (52*i), 40 + 32 + (52*i), 40 + 32 + (52*i), 40 + (52*i)], [0, 0, max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max']), max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max'])], 'b', alpha=0.2)
     plt.fill([len(cases)-20, len(cases), len(cases), len(cases)-20], [0, 0, max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max']), max(cases['Hepatitis C (viral, acute), Confirmed, Previous 52 weeks Max'])], 'b', alpha=0.2)
     plt.legend()
     plt.savefig(f'./plots/hepatitis_cases_{"-".join([str(y) for y in years])}')
@@ -68,9 +68,9 @@ def aggregate_cases(cases):
 
 if __name__ == '__main__':
     read_data()
-    years = list(range(2011,2023))
+    years = list(range(2011, 2023))
 
-    #print(get_peaks(years=years[:-3], state='New York'))
-    #avg_peaks(get_peaks(years=years[:-3]))
+    # print(get_peaks(years=years[:-3], state='New York'))
+    # avg_peaks(get_peaks(years=years[:-3]))
 
     plot_cases(years[:-3])
