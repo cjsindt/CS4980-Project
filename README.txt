@@ -1,3 +1,11 @@
+To make sure all packages are installed, there is a requirements.txt file that you can use pip to install.
+
+$pip install requirements.txt
+
+Before running some scripts, make a directory at src/plots to hold any plots generated.
+
+
+
 Data Sets
 
 Data stored in /src/data/FluView/ sourced from https://gis.cdc.gov/grasp/fluview/fluportaldashboard.html
@@ -5,7 +13,6 @@ ILI case data for the entire nation, grouped by state, was selected over all pos
 
 Data stored in /src/data/United States is the data sourced from OxCGRT (https://github.com/OxCGRT/covid-policy-tracker).
 This is all the available United States data from the repository at the time of project completion.
-
 
 
 ----------------------------------------------------------------------------------------------------
@@ -26,24 +33,44 @@ To generate new plots, call the provided functions at the bottom of the file.
 Examples are given already for New York and Colorado.
 
 
-
 ----------------------------------------------------------------------------------------------------
 correlation.py
+
+This script requires pandas, matplotlib, and scipy
 
 To run:
     python3 correlation.py
 
+This script was used to generate a plot of policies compared to case data while highlighting when flu seasons occured.
+
+Running this script will output a plot in the src/plots directory showing this data.
+
+You can change the state of interest at the bottom of the script with the 'state' variable.
+
+
+----------------------------------------------------------------------------------------------------
+flu_stats.py
+
+This script requires pandas and matplotlib
+
+To run:
+    python3 flu_stats.py
+
+This script is used to collect graphs and stats on ILI case data.
+
+It provides some functions to get the peaks and average them for each flu season, as well as aggregate cases into epiweeks.
+
+When ran, it creates a plot of case data highlighting when flu seasons occur for the years between 2015 and 2022.
+This plot is stored in the src/plots directory.
 
 
 ----------------------------------------------------------------------------------------------------
 regress.py
 
-To run:
-    python3 regress_ili.py
-    python3 regress_hep.py
-    python3 regress_chlam.py
-
 This file requires sklearn, matplotlib, pandas, and numpy.
+
+To run:
+    python3 regress.py
 
 Using the data in the src/data directory, this file is used to generate models for different states and using different groups of policy.
 
