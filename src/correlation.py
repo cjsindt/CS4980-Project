@@ -84,7 +84,7 @@ def get_cases(region, years=[2020, 2021, 2022]):
 
     return result
 
-def get_chlam(region, years=[2020, 2021]):
+def get_chlam(region, years=[2019, 2020, 2021]):
     r = region.upper()
     data = all_chlam.query(f'`Reporting Area`==\"{r}\" & ({" | ".join([f"`MMWR Year` == {y}" for y in years])})')
     #data = all_chlam.query(f'Reporting Area==\"{region}\" & ({" | ".join([f"MMWR Year == {y}" for y in years])})')
@@ -100,7 +100,7 @@ def get_chlam(region, years=[2020, 2021]):
         #print(str(d) + ": " + str(d1[d]) + ", from week: " + str(d2[d]))
         
         for i in range(7):
-            result.append(d1[d])
+            result.append(d1[d] / 7)
 
     return result
 

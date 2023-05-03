@@ -49,24 +49,31 @@ def read_data():
 
 def get_cases(states=[], years=[2020, 2021]):
     result = []
+    states_upper = []
     for state in states:
-        state = state.upper()
-    if len(states) == 0:
+        states_upper.append(state.upper())
+    if len(states_upper) == 0:
         data = all_chlam.query(f'({" | ".join([f"`MMWR Year` == {y}" for y in years])})')
         data = data[['MMWR Week', 'MMWR Year', 'Chlamydia trachomatis infection, Current week']].astype(float).groupby(["MMWR Year", "MMWR Week"]).mean()
-        print(data)
+        #print(data)
         #data = data[['MMWR Week', 'MMWR Year', 'Chlamydia trachomatis infection, Current week']].replace('X', 0).astype(float).groupby(['YEAR', 'WEEK']).mean()
     else:
-        regions = " | ".join([f'`Reporting Area` == \"{s}\"' for s in states])
-        data = casedata.query(f'({regions}) & ({" | ".join([f"`MMWR Year` == {y}" for y in years])})')
+        regions = " | ".join([f'`Reporting Area`==\"{s}\"' for s in states_upper])
+        data = all_chlam.query(f'({regions}) & ({" | ".join([f"`MMWR Year` == {y}" for y in years])})')
+        
+        #print(data)
     
     data = data.reset_index()['Chlamydia trachomatis infection, Current week'].astype(float)
-
+    
+    for d in range(len(data)):
+                if data[d] != data[d]:
+                    data[d] = 0
+    print(data)
     # because case data is by week, spread it out to be by day to match policy data
     for d in range(len(data)):
         for i in range(7):
-            result.append(data[d])
-
+            result.append(data[d] / 7)
+    print("len: ", len(result))
     return np.array(result[:731])
 
 
@@ -78,7 +85,7 @@ def get_policies(states=[], category=containment_closing):
     else:
         data = all_policydata.query(" | ".join([f'RegionName == \"{s}\"' for s in states]))
 
-    policies = data[[c for c in category]].fillna(0).astype(float).to_numpy()
+    policies = data[category].fillna(0).astype(float).to_numpy()
 
     return policies[:731]
 
@@ -93,7 +100,7 @@ def lin_reg(X, y, labels=containment_closing):
     model.fit(X_train, y_train)
 
     # coefficients
-    for i in range(len(category)):
+    for i in range(len(labels)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
     y_pred = model.predict(X_test)
@@ -122,7 +129,7 @@ def ridge_reg(X, y, labels=containment_closing):
     model.fit(X_train, y_train)
 
     # coefficients
-    for i in range(len(category)):
+    for i in range(len(labels)):
         print(f'{labels[i]}: {model.coef_[i]}')
 
     
@@ -216,9 +223,12 @@ def poly_reg(X, y, labels=containment_closing):
 if __name__ == '__main__':
     read_data()
 
+    # because the chlamydia data is stored differently, to get a national view, leave this states list empty
+    # but put ["Total"] in get_cases
     states = []
     category = containment_closing
 
+    # give get_cases states as argument for anything other than national view
     cases = get_cases(states)
     policies = get_policies(states, category=category)
 
