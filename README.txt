@@ -39,7 +39,9 @@ To run:
 regress.py
 
 To run:
-    python3 regress.py
+    python3 regress_ili.py
+    python3 regress_hep.py
+    python3 regress_chlam.py
 
 This file requires sklearn, matplotlib, pandas, and numpy.
 
