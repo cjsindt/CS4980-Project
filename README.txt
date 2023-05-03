@@ -65,7 +65,7 @@ This plot is stored in the src/plots directory.
 
 
 ----------------------------------------------------------------------------------------------------
-regress.py
+regress_*.py
 
 This file requires sklearn, matplotlib, pandas, and numpy.
 
