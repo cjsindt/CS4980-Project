@@ -54,6 +54,7 @@ def get_policy(policy, thresh=1, region=''):
     func = lambda x: 1 if x >= thresh else 0
 
     if isinstance(policy, str):
+        #print("policy result: ", result)
         return data.reset_index()[policy].astype(float).apply(func)
     
     elif isinstance(policy, list):
@@ -63,6 +64,7 @@ def get_policy(policy, thresh=1, region=''):
         result = p_list[0]
         for e in p_list[1:]:
             result = result.add(e, fill_value=0)
+        #print("policy result: ", result)
         return result
     
     else:
@@ -114,26 +116,28 @@ if __name__ == '__main__':
     epiweek_start = 40*7
     epi_length = 32
 
-    state = 'Colorado'
+    state = 'New York'
 
     t = get_policy(containment_closing, region=state)
+    t1 = t[:731]
+    #print("t slice", t1)
     g = get_cases(state)
     b = get_cases(state, years=[2017,2018,2019])
     c = get_chlam(state)
     plt.figure(figsize=(24,6), dpi=200)
-    plt.plot(range(len(t)), t, label='Total Number of Policies Enacted', color='blue')
+    plt.plot(range(365, 365+len(t1)), t1, label='Total Number of Policies Enacted', color='blue')
     plt.xlabel('Day #')
-    plt.ylabel('% Unweighted ILI')
+    plt.ylabel('Total Policies')
     plt.twinx()
     #plt.plot(range(len(g)), g, label='2020-2022 % Unweighted ILI', color='red')
-    plt.plot(range(len(c)), c, label='2020-2021 # Chlamydia cases', color='purple')
+    plt.plot(range(len(c)), c, label='2019-2021 # Chlamydia cases', color='purple')
     #plt.plot(range(len(b)), b, label='2017-2019')
-    plt.fill([0, 20*7, 20*7, 0], [0, 0, max(t), max(t)], 'b', alpha=0.2, label='2019-2020 Flu Season')
-    plt.fill([epiweek_start, epiweek_start + epi_length*7, epiweek_start + epi_length*7, epiweek_start], [0, 0, max(t), max(t)], 'r', alpha=0.2, label='2020-2021 Flu Season')
-    plt.fill([epiweek_start+365, epiweek_start + epi_length*7 + 365, epiweek_start + epi_length*7 + 365, epiweek_start + 365], [0, 0, max(t), max(t)], 'y', alpha=0.2, label='2021-2022 Flu Season')
-    plt.fill([epiweek_start+365*2, 1095, 1095, epiweek_start + 365*2], [0, 0, max(t), max(t)], 'g', alpha=0.2, label='2022-2023 Flu Season')
-    plt.title(f'Number of Policies and % Unweighted ILI for {state} State')
-    plt.ylabel('Total Policies')
+    #plt.fill([0, 20*7, 20*7, 0], [0, 0, max(t), max(t)], 'b', alpha=0.2, label='2019-2020 Flu Season')
+    #plt.fill([epiweek_start, epiweek_start + epi_length*7, epiweek_start + epi_length*7, epiweek_start], [0, 0, max(t), max(t)], 'r', alpha=0.2, label='2020-2021 Flu Season')
+    #plt.fill([epiweek_start+365, epiweek_start + epi_length*7 + 365, epiweek_start + epi_length*7 + 365, epiweek_start + 365], [0, 0, max(t), max(t)], 'y', alpha=0.2, label='2021-2022 Flu Season')
+    #plt.fill([epiweek_start+365*2, 1095, 1095, epiweek_start + 365*2], [0, 0, max(t), max(t)], 'g', alpha=0.2, label='2022-2023 Flu Season')
+    plt.title(f'Number of Policies and # Cases for {state} State')
+    plt.ylabel('# Cases')
     plt.legend()
     plt.show()
     #plt.savefig(f'./plots/PolicyNumVsCase{state}.png')
