@@ -60,7 +60,7 @@ def get_cases(states=[], years=[2020, 2021, 2022]):
         for i in range(7):
             result.append(data[d])
 
-    return np.array(result[:777])
+    return np.array(result[:770])
 
 
 # returns the policies for the given state and category
@@ -72,7 +72,7 @@ def get_policies(states=[], category=containment_closing):
 
     policies = data[category].fillna(0).astype(float).to_numpy()
 
-    return np.array(policies[:777])
+    return np.array(policies[:770])
 
 
 # generates a linear regression model for the given data and prints different metrics to test the model
@@ -206,7 +206,7 @@ def poly_reg(x, y, labels=containment_closing):
 if __name__ == '__main__':
     read_data()
 
-    states = ['New York']
+    states = []
     category = containment_closing
 
     cases = get_cases(states)
