@@ -49,6 +49,22 @@ You can change the state of interest at the bottom of the script with the 'state
 
 
 ----------------------------------------------------------------------------------------------------
+flu_stats.py
+
+This script requires pandas and matplotlib
+
+To run:
+    python3 flu_stats.py
+
+This script is used to collect graphs and stats on ILI case data.
+
+It provides some functions to get the peaks and average them for each flu season, as well as aggregate cases into epiweeks.
+
+When ran, it creates a plot of case data highlighting when flu seasons occur for the years between 2015 and 2022.
+This plot is stored in the src/plots directory.
+
+
+----------------------------------------------------------------------------------------------------
 regress.py
 
 This file requires sklearn, matplotlib, pandas, and numpy.
