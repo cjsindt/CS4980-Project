@@ -22,6 +22,8 @@ def plot_cases(years=[2020, 2021, 2022]):
     plt.legend()
     plt.title(f'ILI Case Data for the Years {years[0]} - {years[-1]}')
     plt.xticks([i*52 for i in range(len(years))], years)
+    plt.xlabel('Year')
+    plt.ylabel('% Unweighted ILI')
     plt.savefig(f'./plots/flu_cases_{"-".join([str(y) for y in years])}')
 
 
